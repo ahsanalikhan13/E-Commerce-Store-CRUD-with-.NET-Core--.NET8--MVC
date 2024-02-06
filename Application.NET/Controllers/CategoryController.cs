@@ -63,9 +63,32 @@ namespace Application.NET.Controllers
 			return View();
 		}
 
-		public IActionResult Delete()
+		public IActionResult Delete(int? id)
 		{
-			return View();
+			if (id == null || id == 0)
+			{
+				return NotFound();
+			}
+			Category? categoryFromdb = _db.Categories.Find(id);
+			if (categoryFromdb == null)
+			{
+				return NotFound();
+			}
+			return View(categoryFromdb);
+		}
+
+		[HttpPost, ActionName("Delete")]
+		public IActionResult DeletePOST(int? id)
+		{
+			Category? obj = _db.Categories.Find(id);
+			if (obj == null)
+			{
+				return NotFound();
+			}
+
+			_db.Categories.Remove(obj);
+			_db.SaveChanges();
+			return RedirectToAction("Index");
 		}
 	}
 }
